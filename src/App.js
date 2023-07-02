@@ -1,23 +1,51 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from "react";
+import FormComponent from "./components/FormComponent";
+import styles from "./App.module.css";
 
 function App() {
+  const [program, setProgram] = useState("UG");
+  const [statement, setStatement] = useState("");
+
+  useEffect(() => {
+    setStatement("")
+  }, [program]);
+
+  const changeProgram = (event) => {
+    setProgram(event.target.value);
+  };
+
+  function programSeat(seat, fromTotal) {
+    setStatement(`${program} SEATING ${seat > 0 ? seat - 1 : 0}/${fromTotal}`);
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <div className={styles.container}>
+      <div className={styles.program}>
+        <label htmlFor="program">Choose Program:</label>
+        <select
+          className={styles.dropdowns}
+          id="program"
+          onChange={changeProgram}
+          value={program}
         >
-          Learn React
-        </a>
-      </header>
+          <option value="UG">Undergraduate</option>
+          <option value="PG">Postgraduate</option>
+        </select>
+      </div>
+      {program === "UG" ? (
+        statement !== "" ? (
+          <p className={styles.statement}>{statement}</p>
+        ) : (
+          <p>UG Program Capacity 60</p>
+        )
+      ) : program === "PG" ? (
+        statement !== "" ? (
+          <p className={styles.statement}>{statement}</p>
+        ) : (
+          <p>PG Program Capacity 40</p>
+        )
+      ) : null}
+      <FormComponent choosenProgram={program} programSeat={programSeat} />
     </div>
   );
 }

@@ -1,0 +1,17 @@
+.container{
+  margin: 10vh auto;
+  width: 60vh;
+}
+.program {
+    margin-bottom: 20px;
+  }
+  
+  .dropdowns {
+    padding: 5px;
+    font-size: 16px;
+  }
+  
+  .statement {
+    margin-top: 10px;
+    font-weight: bold;
+  }
