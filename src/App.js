@@ -1,51 +1,63 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import FormComponent from "./components/FormComponent";
+import EnrolList from "./components/EnrolList";
 import styles from "./App.module.css";
 
 function App() {
   const [program, setProgram] = useState("UG");
-  const [statement, setStatement] = useState("");
+  const [ugSeat, setUgSeat] = useState(60);
+  const [pgSeat, setPgSeat] = useState(40);
+  const [studentDetails, setStudentDetails] = useState({});
 
-  useEffect(() => {
-    setStatement("")
-  }, [program]);
-
-  const changeProgram = (event) => {
+  const handleChange = (event) => {
     setProgram(event.target.value);
+    setUgSeat(ugSeat);
+    setPgSeat(pgSeat);
   };
 
-  function programSeat(seat, fromTotal) {
-    setStatement(`${program} SEATING ${seat > 0 ? seat - 1 : 0}/${fromTotal}`);
+  function setUpdateSeats(updatedSeats) {
+    if (program === "UG") {
+      setUgSeat(updatedSeats);
+      return;
+    }
+    setPgSeat(updatedSeats);
+    return;
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.program}>
-        <label htmlFor="program">Choose Program:</label>
-        <select
-          className={styles.dropdowns}
-          id="program"
-          onChange={changeProgram}
-          value={program}
-        >
-          <option value="UG">Undergraduate</option>
-          <option value="PG">Postgraduate</option>
-        </select>
+    <div className={styles.App}>
+      <div className={styles.programs}>
+        <h3 className={styles.title}>STUDENT ENROLLMENT FORM</h3>
+        <ul className={styles.ulEnrol}>
+          <li className={styles.parentlabels} onChange={handleChange}>
+            <input
+              type="radio"
+              className={styles.radiosel}
+              value="UG"
+              name="programGroup"
+              defaultChecked
+            />
+            Undergraduate
+            <input
+              type="radio"
+              className={styles.radiosel}
+              value="PG"
+              name="programGroup"
+            />
+            Postgraduate
+          </li>
+          <li className={styles.parentlabels}>
+            Remaining {program} seats - {program === "UG" ? ugSeat : pgSeat}
+          </li>
+        </ul>
       </div>
-      {program === "UG" ? (
-        statement !== "" ? (
-          <p className={styles.statement}>{statement}</p>
-        ) : (
-          <p>UG Program Capacity 60</p>
-        )
-      ) : program === "PG" ? (
-        statement !== "" ? (
-          <p className={styles.statement}>{statement}</p>
-        ) : (
-          <p>PG Program Capacity 40</p>
-        )
-      ) : null}
-      <FormComponent choosenProgram={program} programSeat={programSeat} />
+      <FormComponent
+        chosenProgram={program}
+        setUpdateSeats={setUpdateSeats}
+        currentSeats={program === "UG" ? ugSeat : pgSeat}
+        setStudentDetails={setStudentDetails}
+      />
+      <EnrolList studentDetails={studentDetails} setStudentDetails={setStudentDetails} />
     </div>
   );
 }

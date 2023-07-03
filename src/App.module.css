@@ -1,17 +1,27 @@
-.container{
+.App {
   margin: 10vh auto;
   width: 60vh;
 }
-.program {
-    margin-bottom: 20px;
-  }
-  
-  .dropdowns {
-    padding: 5px;
-    font-size: 16px;
-  }
-  
-  .statement {
-    margin-top: 10px;
-    font-weight: bold;
-  }
+.programs {
+  background: rgba(022, 061, 097, 0.789);
+  color: rgba(031, 226, 077, 0.669);
+  margin-bottom: 20px;
+}
+
+.radiosel{
+  margin-left: 30px;
+}
+
+.ulEnrol {
+  list-style: none;
+  padding: 0;
+}
+
+.title {
+  font-size: 24px;
+  color: #333;
+}
+
+.parentlabels {
+  margin-bottom: 10px;
+}

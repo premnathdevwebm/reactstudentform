@@ -5,6 +5,11 @@
   .input {
     margin-bottom: 1rem;
   }
+
+  .input::placeholder{
+    color: rgba(083, 070, 070, 0.596);
+    opacity: 1;
+  }
   
   .formLabel {
     display: inline-block;
