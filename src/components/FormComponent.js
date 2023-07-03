@@ -1,4 +1,4 @@
-import { useReducer } from "react";
+import { useEffect, useReducer } from "react";
 import styles from "./FormComponent.module.css";
 
 const initialState = {
@@ -28,6 +28,15 @@ function reducer(state, action) {
 
 function FormComponent(props) {
   const [state, dispatch] = useReducer(reducer, initialState);
+
+  useEffect(()=>{
+    if(props.dataEnrolMent){
+      dispatch({ type: "SET_FIRST_NAME", payload: props.dataEnrolMent.fname });
+      dispatch({ type: "SET_LAST_NAME", payload: props.dataEnrolMent.lname });
+      dispatch({ type: "SET_EMAIL", payload: props.dataEnrolMent.email });
+      dispatch({ type: "SET_WELCOME_MSG", payload: "" });
+    }
+  }, [props])
 
   const handleInputReset = (fname, lname, email) => {
     dispatch({ type: "SET_FIRST_NAME", payload: fname });

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FormComponent from "./components/FormComponent";
 import EnrolList from "./components/EnrolList";
 import styles from "./App.module.css";
@@ -8,6 +8,13 @@ function App() {
   const [ugSeat, setUgSeat] = useState(60);
   const [pgSeat, setPgSeat] = useState(40);
   const [studentDetails, setStudentDetails] = useState({});
+  const [dataEnrolMent, setDataEnrolMent] = useState({});
+
+  useEffect(() => {
+    if (dataEnrolMent) {
+      dataEnrolMent.program === "UG" ? setProgram("UG") : dataEnrolMent.program === "PG" ? setProgram("PG"): setProgram("UG");
+    }
+  }, [dataEnrolMent]);
 
   const handleChange = (event) => {
     setProgram(event.target.value);
@@ -34,6 +41,7 @@ function App() {
               type="radio"
               className={styles.radiosel}
               value="UG"
+              onSelect={(event)=>setProgram(event.target.value)}
               name="programGroup"
               defaultChecked
             />
@@ -42,6 +50,7 @@ function App() {
               type="radio"
               className={styles.radiosel}
               value="PG"
+              onSelect={(event)=>setProgram(event.target.value)}
               name="programGroup"
             />
             Postgraduate
@@ -56,8 +65,15 @@ function App() {
         setUpdateSeats={setUpdateSeats}
         currentSeats={program === "UG" ? ugSeat : pgSeat}
         setStudentDetails={setStudentDetails}
+        dataEnrolMent={dataEnrolMent}
       />
-      <EnrolList studentDetails={studentDetails} setStudentDetails={setStudentDetails} />
+      <EnrolList
+        studentDetails={studentDetails}
+        setStudentDetails={setStudentDetails}
+        setUgSeat={setUgSeat}
+        setPgSeat={setPgSeat}
+        dataToEnrolForm={setDataEnrolMent}
+      />
     </div>
   );
 }
