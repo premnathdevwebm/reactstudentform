@@ -1,53 +1,100 @@
-import { useState, useEffect } from "react";
-import FormComponent from "./components/FormComponent";
-import styles from "./App.module.css";
+import "./App.css";
+import { lazy, useState, Suspense } from "react";
+import EnrolmentForm from "./components/EnrolmentForm";
+const EnrolList = lazy(() => import("./components/EnrolList.js"));
 
-function App() {
+const App = () => {
   const [program, setProgram] = useState("UG");
-  const [statement, setStatement] = useState("");
+  const [ugSeats, setUgSeats] = useState(60);
+  const [pgSeats, setPgSeats] = useState(40);
+  const [studentDetails, setStudentDetails] = useState({});
+  const [action, setAction] = useState();
+  const [selItemId, setSelItemId] = useState();
+  const [isUGChecked, setIsUGChecked] = useState(true);
+  const [isRestoreSeats, setIsRestoreSeats] = useState(false);
 
-  useEffect(() => {
-    setStatement("")
-  }, [program]);
-
-  const changeProgram = (event) => {
+  const handleChange = (event) => {
     setProgram(event.target.value);
+    setIsUGChecked(!isUGChecked);
+    if (isRestoreSeats) {
+      event.target.value === "UG"
+        ? setPgSeats(pgSeats + 1)
+        : setUgSeats(ugSeats + 1);
+      setIsRestoreSeats(false);
+    }
+    //event.stopPropagation();
   };
 
-  function programSeat(seat, fromTotal) {
-    setStatement(`${program} SEATING ${seat > 0 ? seat - 1 : 0}/${fromTotal}`);
-  }
+  const handleItemSelection = (action, id) => {
+    setAction(action);
+    setSelItemId(id);
+  };
+  const restoreSeats = (pgm) => {
+    pgm === "UG" ? setUgSeats(ugSeats + 1) : setPgSeats(pgSeats + 1);
+    setAction("");
+  };
+  const setSelectedProgram = (selProgram) => {
+    selProgram === "UG" ? setIsUGChecked(true) : setIsUGChecked(false);
+    setProgram(selProgram);
+    setIsRestoreSeats(true);
+  };
+
+  const setUpdatedSeats = (updatedSeats) => {
+    if (program === "UG") {
+      setUgSeats(updatedSeats);
+    } else {
+      setPgSeats(updatedSeats);
+    }
+  };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.program}>
-        <label htmlFor="program">Choose Program:</label>
-        <select
-          className={styles.dropdowns}
-          id="program"
-          onChange={changeProgram}
-          value={program}
-        >
-          <option value="UG">Undergraduate</option>
-          <option value="PG">Postgraduate</option>
-        </select>
+    <div className="App">
+      <div className="programs">
+        <h3 className="title">Student Enrolment Form</h3>
+        <ul className="ulEnrol">
+          <li className="parentLabels" onChange={handleChange}>
+            <input
+              type="radio"
+              value="UG"
+              name="programGroup"
+              checked={isUGChecked}
+            />
+            Undergraduate
+            <input
+              type="radio"
+              className="radioSel"
+              value="PG"
+              name="programGroup"
+              checked={!isUGChecked}
+            />
+            Postgraduate
+          </li>
+          <li>
+            <label className="parentLabels">
+              Remaining {program} Seats - {program === "UG" ? ugSeats : pgSeats}
+            </label>
+          </li>
+        </ul>
       </div>
-      {program === "UG" ? (
-        statement !== "" ? (
-          <p className={styles.statement}>{statement}</p>
-        ) : (
-          <p>UG Program Capacity 60</p>
-        )
-      ) : program === "PG" ? (
-        statement !== "" ? (
-          <p className={styles.statement}>{statement}</p>
-        ) : (
-          <p>PG Program Capacity 40</p>
-        )
-      ) : null}
-      <FormComponent choosenProgram={program} programSeat={programSeat} />
+      <EnrolmentForm
+        setStudentDetails={setStudentDetails}
+        handleItemSelection={handleItemSelection}
+      />
+      <Suspense fallback={<div> Enrolled student details loading......</div>}>
+        <EnrolList
+          studentDetails={studentDetails}
+          setStudentDetails={setStudentDetails}
+          selectedItemId={selItemId}
+          action={action}
+          restoreSeats={restoreSeats}
+          chosenProgram={program}
+          setUpdatedSeats={setUpdatedSeats}
+          currentSeats={program === "UG" ? ugSeats : pgSeats}
+          setSelectedProgram={setSelectedProgram}
+        />
+      </Suspense>
     </div>
   );
-}
+};
 
 export default App;
